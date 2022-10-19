@@ -28,7 +28,7 @@ namespace DemoGameServer.Grains
 
             if(_status== PlayerStatus.GameOver||_status==PlayerStatus.Default)
             {
-                _life= 10;
+                _life= LifeDefaultValue;
                 _point = PointDefaultValue;
                 _canDrinkElixir= false;
             }
@@ -62,7 +62,7 @@ namespace DemoGameServer.Grains
         public override async Task ReJoinGame()
         {
             _status = PlayerStatus.OnGame;
-            _life = 10;
+            _life = LifeDefaultValue;
             _point = PointDefaultValue;
             _canDrinkElixir = false;
             await SendMessageToGamePlayerState();
@@ -111,7 +111,7 @@ namespace DemoGameServer.Grains
             if (_canDrinkElixir)
             {
                 _life = LifeDefaultValue;
-                _point -= 5;
+                _point -= PointDefaultValue;
                 if (_point < PointDefaultValue) _point = PointDefaultValue;
 
                 if (_elixirActorPid != null)
