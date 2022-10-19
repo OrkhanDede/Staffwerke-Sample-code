@@ -20,9 +20,7 @@ namespace DemoGameServer.Actors
         {
             switch (context.Message)
             {
-                case Started:
-                    await WhenActorStartAsync(context);
-                    break;
+                
                 case Stopping:
                     await WhenActorStopAsync(context);
                     break;
@@ -60,10 +58,7 @@ namespace DemoGameServer.Actors
         }
 
 
-        private async Task WhenActorStartAsync(IContext context)
-        {
-           
-        }
+        
         private async Task WhenActorStopAsync(IContext context)
         {
             if (String.IsNullOrEmpty(_name)) return;

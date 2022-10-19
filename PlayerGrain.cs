@@ -7,10 +7,12 @@ namespace DemoGameServer.Grains
   
     public class PlayerGrain : PlayerGrainBase
     {
+		private const int LifeDefaultValue=10;
+		private const int PointDefaultValue=0;
         private readonly ClusterIdentity _clusterIdentity;
         private PlayerIdentityInfo? _playerIdentityInfo;
-        private int _life = 10;
-        private int _point = 0;
+        private int _life = LifeDefaultValue;
+        private int _point = PointDefaultValue;
         private PlayerStatus _status = PlayerStatus.Default;
         private bool _canDrinkElixir = false;
         private PID? _elixirActorPid=null;
@@ -27,7 +29,7 @@ namespace DemoGameServer.Grains
             if(_status== PlayerStatus.GameOver||_status==PlayerStatus.Default)
             {
                 _life= 10;
-                _point = 0;
+                _point = PointDefaultValue;
                 _canDrinkElixir= false;
             }
             _status = PlayerStatus.OnGame;
@@ -61,7 +63,7 @@ namespace DemoGameServer.Grains
         {
             _status = PlayerStatus.OnGame;
             _life = 10;
-            _point = 0;
+            _point = PointDefaultValue;
             _canDrinkElixir = false;
             await SendMessageToGamePlayerState();
         }
@@ -82,7 +84,7 @@ namespace DemoGameServer.Grains
             var shutedPlayerGrain = Context.Cluster().GetPlayerGrain(request.Username);
             await shutedPlayerGrain.Shuted(CancellationToken.None);
             
-            if (_point >= 0) _point++;
+            if (_point >= PointDefaultValue) _point++;
 
             SetCanDrinkElixir();
 
@@ -93,8 +95,8 @@ namespace DemoGameServer.Grains
         {
             if (_status == PlayerStatus.GameOver) return;
 
-            if (_life > 0) _life--;
-            if (_life == 0)
+            if (_life > LifeDefaultValue) _life--;
+            if (_life == LifeDefaultValue)
             {
                 _status = PlayerStatus.GameOver;
                 _canDrinkElixir = false;
@@ -108,9 +110,9 @@ namespace DemoGameServer.Grains
         {
             if (_canDrinkElixir)
             {
-                _life = 10;
+                _life = LifeDefaultValue;
                 _point -= 5;
-                if (_point < 0) _point = 0;
+                if (_point < PointDefaultValue) _point = PointDefaultValue;
 
                 if (_elixirActorPid != null)
                 {
@@ -124,9 +126,9 @@ namespace DemoGameServer.Grains
         }
         private void SetCanDrinkElixir()
         {
-            if (_point != 0 &&
+            if (_point != PointDefaultValue &&
                 _point % 5 == 0 &&
-                _life < 10 &&
+                _life < LifeDefaultValue &&
                 _status != PlayerStatus.GameOver&&
                 !_canDrinkElixir)
             {
